@@ -10,3 +10,4 @@ jobs:
           python-version: '3.13'
       - run: python -m unittest discover -s tests -v
       - run: python settlement_pulse.py demo --out output
+      - run: cmp output/report.html docs/index.html && cmp output/rejected_rows.csv docs/rejected_rows.csv

@@ -2,6 +2,8 @@
 
 A small, reproducible post-trade data product for exploring settlement exceptions. It ingests instruction and event CSVs, validates them, builds an as-of snapshot in SQLite, and produces a self-contained HTML report. All data is synthetic. No SEB systems, client data, or proprietary models are used.
 
+**[View the sample report](https://arinf1.github.io/settlement-pulse/)** · [Read the case study](docs/CASE_STUDY.md)
+
 **Why this project:** Investor Services teams need to turn operational data into trustworthy reporting. A useful report starts with traceable definitions, rejected-record visibility, repeatable runs, and a clear explanation of what an exception means. This project demonstrates those practices with Python, SQL, and a report that a non-engineer can read.
 
 ## Run it
@@ -38,7 +40,7 @@ Dates use ISO `YYYY-MM-DD`; event timestamps use ISO UTC ending in `Z`. `amount`
 
 The snapshot includes instructions traded by the as-of date and uses the latest valid event before midnight UTC following that date. An instruction is **settled on time** when its first `SETTLED` event occurred on or before the intended date. A **currently open exception** is an unsettled instruction whose intended date is before the as-of date, whether its latest event is `FAILED`, `SENT`, or missing. Thus an explicit failure that was later settled is no longer an open exception, but still counts as late if it settled after the intended date. Exposure is shown by currency; unlike amounts in different currencies, counts can be combined. The report is an operational illustration and does not implement CSDR reporting definitions or penalties.
 
-The SQLite database has `instructions`, `events`, and `rejected_rows` tables plus `snapshot` and `market_metrics` views. Query it directly, for example:
+The SQLite database has `instructions`, `events`, `rejected_rows`, and `snapshot` tables plus a `market_metrics` view. Query it directly, for example:
 
 ```sql
 SELECT market, COUNT(*) AS open_exceptions
