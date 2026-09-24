@@ -166,7 +166,7 @@ def write_rejections(db_path: Path, path: Path):
         return "'" + value if value.lstrip().startswith(("=", "+", "-", "@")) else value
 
     with closing(sqlite3.connect(db_path)) as connection, path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["source", "line_number", "record_id", "reason"])
         writer.writerows(tuple(safe_cell(value) for value in row)
                          for row in connection.execute("SELECT * FROM rejected_rows ORDER BY source,line_number"))
